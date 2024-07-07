@@ -1,7 +1,7 @@
 import { formatSchema } from "@prisma/internals";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.status(405).json({ message: "Method Not Allowed" });
     return;
