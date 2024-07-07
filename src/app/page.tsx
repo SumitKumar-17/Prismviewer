@@ -62,7 +62,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-xl">Deploy your Database Repository</CardTitle>
+          <CardTitle className="text-xl">Push your Database Url</CardTitle>
           <CardDescription>Enter the URL of your Database repository to deploy it</CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,7 +77,7 @@ export default function Home() {
               />
             </div>
             <Button onClick={handlePrisma}  className="w-full" type="submit">
-              {uploading ? "Deploying..." : "Deploy"}
+              {uploading ? "Pushing ..." : "Push"}
             </Button>
           </div>
         </CardContent>
