@@ -3,8 +3,8 @@ import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/com
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip"
 import axios from "axios"
-import Router from 'next/router'
 import { useToast } from "@/components/ui/use-toast"
 
 
@@ -18,7 +18,7 @@ const HomePage = () => {
     const [output, setOutput] = useState<string>("");
     const [studioRunning, setStudioRunning] = useState(false);
 
-    const handlePrisma = async () => {
+    const handlePrismaPush = async () => {
         setUploading(true);
 
         try {
@@ -88,7 +88,7 @@ const HomePage = () => {
                                 placeholder="database url"
                             />
                         </div>
-                        <Button onClick={handlePrisma} className="w-full" type="submit">
+                        <Button onClick={handlePrismaPush} className="w-full" type="submit">
                             {uploading ? "Pushing ..." : "Push"}
                         </Button>
                     </div>
