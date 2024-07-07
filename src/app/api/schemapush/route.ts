@@ -9,8 +9,7 @@ const execPromise = util.promisify(exec);
 
 
 const DbUrlSchema = z.object({
-  dbUrl: z.string(),
-  dbType: z.string()
+  schema: z.string(),
 });
 
 export async function POST(req: NextRequest) {
@@ -22,23 +21,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
 
-    const { dbUrl,dbType } = parsedBody.data;
+    const { schema } = parsedBody.data;
 
-    // const schemaPath = path.join(process.cwd(), "prisma", "schema.prisma");
+    const schemaPath = path.join(process.cwd(), "prisma", "schema.prisma");
     
-    // const schemaContent = `
-    // generator client {
-    //   provider = "prisma-client-js"
-    // }
-
-    // datasource db {
-    //   provider = "${dbType}"
-    //   url      = "${dbUrl}"
-    // }
-    
-    // `;
-    
-    // fs.writeFileSync(schemaPath, schemaContent);
+    fs.writeFileSync(schemaPath, schema);
 
     const { stdout, stderr } = await execPromise("npx prisma db push");
     if (stderr) {

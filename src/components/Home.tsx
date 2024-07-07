@@ -3,15 +3,15 @@ import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/com
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip"
 import axios from "axios"
 import { useToast } from "@/components/ui/use-toast"
+import { Textarea } from './ui/textarea';
 
 
 const HomePage = () => {
     const { toast } = useToast()
-    
-    const  [dbType ,setdbType]=useState<string>("");
+
+    const [dbType, setdbType] = useState<string>("");
     const [dbUrl, setdbUrl] = useState<string>("");
     const [uploadingPull, setUploadingPull] = useState(false);
     const [uploadingPush, setUploadingPush] = useState(false);
@@ -19,6 +19,11 @@ const HomePage = () => {
     const [message, setMessage] = useState<string>("");
     const [output, setOutput] = useState<string>("");
     const [studioRunning, setStudioRunning] = useState(false);
+    const [schema, setSchema] = useState<string>('');
+
+    const handleTextareaChange = (event:any) => {
+        setSchema(event.target.value);
+    };
 
     const handlePrismaPull = async () => {
         setUploadingPull(true);
@@ -42,12 +47,12 @@ const HomePage = () => {
                 duration: 5000
             });
         } catch (error) {
-            console.error('Error during POST request:', error);
+            console.error('Error during Pulling request:', error);
             setUploadingPull(false);
             setGenerated(false);
             toast({
                 title: "Error",
-                description: "Error during POST request",
+                description: "Error during Pulling request",
                 duration: 5000,
                 variant: "destructive",
             });
@@ -59,8 +64,7 @@ const HomePage = () => {
 
         try {
             const response = await axios.post('/api/schemapush', {
-                dbUrl: dbUrl,
-                dbType: dbType
+                schema:schema
             });
 
             console.log('POST response:', response.data);
@@ -76,12 +80,12 @@ const HomePage = () => {
                 duration: 5000
             });
         } catch (error) {
-            console.error('Error during POST request:', error);
+            console.error('Error during Pushing request:', error);
             setUploadingPush(false);
             setGenerated(false);
             toast({
                 title: "Error",
-                description: "Error during POST request",
+                description: "Error during Pushing request",
                 duration: 5000,
                 variant: "destructive",
             });
@@ -109,40 +113,55 @@ const HomePage = () => {
     };
     return (
         <main className="flex flex-col items-center justify-center  bg-white p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle className="text-xl">Push your Database Url</CardTitle>
-                    <CardDescription>Enter the URL of your Database repository to deploy it</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                    <div className="space-y-2">
-                            <Label htmlFor="Database-type">Database type</Label>
-                            <Input
-                                onChange={(e) => {
-                                    setdbType(e.target.value);
-                                }}
-                                placeholder="mysql"
-                            />
+            <div className=" flex w-full lg:flex-row gap-4  max-w-4xl">
+
+                <Card className="flex-1">
+                    <CardHeader>
+                        <CardTitle className="text-xl">Pull your Database Schema</CardTitle>
+                        <CardDescription>Enter the URL of your Database repository to pull the schema</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="Database-type">Database type</Label>
+                                <Input
+                                    onChange={(e) => {
+                                        setdbType(e.target.value);
+                                    }}
+                                    placeholder="mysql"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="Database-url">Database Repository URL</Label>
+                                <Input
+                                    onChange={(e) => {
+                                        setdbUrl(e.target.value);
+                                    }}
+                                    placeholder="mysql://root:sumit@localhost:55000/users"
+                                />
+                            </div>
+                            <Button onClick={handlePrismaPull} className="w-full" type="submit">
+                                {uploadingPull ? "Pulling ..." : "Pull"}
+                            </Button>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="Database-url">Database Repository URL</Label>
-                            <Input
-                                onChange={(e) => {
-                                    setdbUrl(e.target.value);
-                                }}
-                                placeholder="mysql://root:sumit@localhost:55000/users"
+                    </CardContent>
+                </Card>
+
+                <Card className="flex-1">
+                    <CardContent className='pt-10'>
+                        <div className="grid m-auto w-full gap-2">
+                            <Textarea rows={9} placeholder="Paste your Schema here." 
+                            value={schema}
+                            onChange={handleTextareaChange}
                             />
+                            <Button onClick={handlePrismaPush} className="w-full" type="submit">
+                                {uploadingPush ? "Pushing ..." : "Push"}
+                            </Button>
                         </div>
-                        <Button onClick={handlePrismaPull} className="w-full" type="submit">
-                            {uploadingPull ? "Pulling ..." : "Pull"}
-                        </Button>
-                        <Button onClick={handlePrismaPush} className="w-full" type="submit">
-                            {uploadingPush ? "Pushing ..." : "Push"}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </div>
+
             {generated && <Card className="w-full max-w-md mt-8">
                 <CardHeader>
                     <CardTitle className="text-xl">Schema Generated Status</CardTitle>
@@ -151,24 +170,24 @@ const HomePage = () => {
                     <CardDescription>{output}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                   <div className='flex gap-3'>
-                   <Button
-                        disabled={studioRunning}
+                    <div className='flex gap-3'>
+                        <Button
+                            disabled={studioRunning}
 
-                        onClick={handleClick}
+                            onClick={handleClick}
 
-                    >
-                        Open Prisma Studio
-                    </Button>
+                        >
+                            Open Prisma Studio
+                        </Button>
 
-                    <Button
+                        <Button
 
-                        onClick={stopPrismaStudio}
+                            onClick={stopPrismaStudio}
 
-                    >
-                        Stop Prisma Studio
-                    </Button>
-                   </div>
+                        >
+                            Stop Prisma Studio
+                        </Button>
+                    </div>
                 </CardContent>
 
             </Card>}
