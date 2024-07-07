@@ -122,7 +122,7 @@ const HomePage = () => {
                                 onChange={(e) => {
                                     setdbType(e.target.value);
                                 }}
-                                placeholder="database tpye"
+                                placeholder="mysql"
                             />
                         </div>
                         <div className="space-y-2">
@@ -131,7 +131,7 @@ const HomePage = () => {
                                 onChange={(e) => {
                                     setdbUrl(e.target.value);
                                 }}
-                                placeholder="database url"
+                                placeholder="mysql://root:sumit@localhost:55000/users"
                             />
                         </div>
                         <Button onClick={handlePrismaPull} className="w-full" type="submit">
