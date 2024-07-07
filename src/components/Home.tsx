@@ -10,20 +10,23 @@ import { useToast } from "@/components/ui/use-toast"
 
 const HomePage = () => {
     const { toast } = useToast()
-
+    
+    const  [dbType ,setdbType]=useState<string>("");
     const [dbUrl, setdbUrl] = useState<string>("");
-    const [uploading, setUploading] = useState(false);
+    const [uploadingPull, setUploadingPull] = useState(false);
+    const [uploadingPush, setUploadingPush] = useState(false);
     const [generated, setGenerated] = useState(false);
     const [message, setMessage] = useState<string>("");
     const [output, setOutput] = useState<string>("");
     const [studioRunning, setStudioRunning] = useState(false);
 
-    const handlePrismaPush = async () => {
-        setUploading(true);
+    const handlePrismaPull = async () => {
+        setUploadingPull(true);
 
         try {
-            const response = await axios.post('/api/schema', {
-                dbUrl: dbUrl
+            const response = await axios.post('/api/schemapull', {
+                dbUrl: dbUrl,
+                dbType: dbType
             });
 
             console.log('POST response:', response.data);
@@ -31,7 +34,7 @@ const HomePage = () => {
             setMessage(response.data.message);
             setOutput(response.data.output);
 
-            setUploading(false);
+            setUploadingPull(false);
             setGenerated(true);
             toast({
                 title: "Schema Generated",
@@ -40,7 +43,41 @@ const HomePage = () => {
             });
         } catch (error) {
             console.error('Error during POST request:', error);
-            setUploading(false);
+            setUploadingPull(false);
+            setGenerated(false);
+            toast({
+                title: "Error",
+                description: "Error during POST request",
+                duration: 5000,
+                variant: "destructive",
+            });
+        }
+    }
+
+    const handlePrismaPush = async () => {
+        setUploadingPush(true);
+
+        try {
+            const response = await axios.post('/api/schemapush', {
+                dbUrl: dbUrl,
+                dbType: dbType
+            });
+
+            console.log('POST response:', response.data);
+
+            setMessage(response.data.message);
+            setOutput(response.data.output);
+
+            setUploadingPush(false);
+            setGenerated(true);
+            toast({
+                title: "Schema Generated",
+                description: "Your schema is successfully pushed!",
+                duration: 5000
+            });
+        } catch (error) {
+            console.error('Error during POST request:', error);
+            setUploadingPush(false);
             setGenerated(false);
             toast({
                 title: "Error",
@@ -79,6 +116,15 @@ const HomePage = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
+                    <div className="space-y-2">
+                            <Label htmlFor="Database-type">Database type</Label>
+                            <Input
+                                onChange={(e) => {
+                                    setdbType(e.target.value);
+                                }}
+                                placeholder="database tpye"
+                            />
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="Database-url">Database Repository URL</Label>
                             <Input
@@ -88,8 +134,11 @@ const HomePage = () => {
                                 placeholder="database url"
                             />
                         </div>
+                        <Button onClick={handlePrismaPull} className="w-full" type="submit">
+                            {uploadingPull ? "Pulling ..." : "Pull"}
+                        </Button>
                         <Button onClick={handlePrismaPush} className="w-full" type="submit">
-                            {uploading ? "Pushing ..." : "Push"}
+                            {uploadingPush ? "Pushing ..." : "Push"}
                         </Button>
                     </div>
                 </CardContent>
@@ -102,7 +151,8 @@ const HomePage = () => {
                     <CardDescription>{output}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button
+                   <div className='flex gap-3'>
+                   <Button
                         disabled={studioRunning}
 
                         onClick={handleClick}
@@ -118,6 +168,7 @@ const HomePage = () => {
                     >
                         Stop Prisma Studio
                     </Button>
+                   </div>
                 </CardContent>
 
             </Card>}
