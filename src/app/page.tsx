@@ -1,8 +1,7 @@
-'use client'
-import { AlertDetails } from "@/components/AlertDetails"
-import HomePage from "@/components/Home"
-import Navbar from "@/components/Navbar"
-
+"use client";
+import { AlertDetails } from "@/components/AlertDetails";
+import HomePage from "@/components/Home";
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
