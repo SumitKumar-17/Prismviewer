@@ -148,9 +148,13 @@ const HomePage = () => {
                 </Card>
 
                 <Card className="flex-1">
-                    <CardContent className='pt-10'>
+                <CardHeader>
+                        <CardTitle className="text-xl">Push your Database Schema</CardTitle>
+                        <CardDescription>Enter the schema of your Database  to push the schema</CardDescription>
+                    </CardHeader>
+                    <CardContent >
                         <div className="grid m-auto w-full gap-2">
-                            <Textarea rows={9} placeholder="Paste your Schema here." 
+                            <Textarea rows={12} placeholder="Paste your Schema here." 
                             value={schema}
                             onChange={handleTextareaChange}
                             />
