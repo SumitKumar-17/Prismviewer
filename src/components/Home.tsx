@@ -5,8 +5,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
 import Router from 'next/router'
+import { useToast } from "@/components/ui/use-toast"
+
 
 const HomePage = () => {
+    const { toast } = useToast()
+
     const [dbUrl, setdbUrl] = useState<string>("");
     const [uploading, setUploading] = useState(false);
     const [generated, setGenerated] = useState(false);
@@ -29,9 +33,21 @@ const HomePage = () => {
 
             setUploading(false);
             setGenerated(true);
+            toast({
+                title: "Schema Generated",
+                description: "Your schema is successfully generated!",
+                duration: 5000
+            });
         } catch (error) {
             console.error('Error during POST request:', error);
             setUploading(false);
+            setGenerated(false);
+            toast({
+                title: "Error",
+                description: "Error during POST request",
+                duration: 5000,
+                variant: "destructive",
+            });
 
         }
     }
