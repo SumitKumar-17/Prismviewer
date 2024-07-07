@@ -48,7 +48,6 @@ const HomePage = () => {
                 duration: 5000,
                 variant: "destructive",
             });
-
         }
     }
 
